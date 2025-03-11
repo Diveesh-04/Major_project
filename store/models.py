@@ -3,13 +3,18 @@ from django.contrib.auth.models import AbstractUser
 from django.conf import settings
 from django.utils.text import slugify
 
-# Custom User Model
 class CustomUser(AbstractUser):
-    email = models.EmailField(unique=True)
-    
-    class Meta:
-        verbose_name = "Custom User"
-        verbose_name_plural = "Custom Users"
+    phone_number = models.CharField(max_length=15, blank=True, null=True)
+    date_of_birth = models.DateField(blank=True, null=True)
+    gender = models.CharField(
+        max_length=10,
+        choices=[('Male', 'Male'), ('Female', 'Female'), ('Other', 'Other')],
+        blank=True,
+        null=True
+    )
+    is_email_verified = models.BooleanField(default=False)
+    def __str__(self):
+        return self.username
 
     def __str__(self):
         return self.username

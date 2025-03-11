@@ -1,0 +1,1 @@
+console.log("Django Static Files Loaded!");

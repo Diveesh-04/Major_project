@@ -1,0 +1,44 @@
+{% extends 'store/base.html' %}
+{% block content %}
+<div class="container mt-5">
+    <h2>Your Cart</h2>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Product</th>
+                <th>Quantity</th>
+                <th>Price</th>
+                <th>Remove</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in cart_items %}
+            <tr>
+                <td>{{ item.product.name }}</td>
+                <td>{{ item.quantity }}</td>
+                <td>₹{{ item.product.price }}</td>
+                <td>
+                    <button class="btn btn-danger btn-sm" onclick="removeFromCart({{ item.id }})">Remove</button>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<script>
+function removeFromCart(cartId) {
+    fetch(`/api/cart/${cartId}/`, {
+        method: 'DELETE',
+        headers: { 'X-CSRFToken': '{{ csrf_token }}' }
+    })
+    .then(response => {
+        if (response.ok) {
+            location.reload();
+        } else {
+            alert("Error removing item");
+        }
+    });
+}
+</script>
+{% endblock %}

@@ -19,6 +19,7 @@ from django.urls import path, include
 
 
 urlpatterns = [
-    path('', admin.site.urls),
+  path('admin/', admin.site.urls),  # Keep this for admin panel
+    path('', include('store.urls')),  # This makes sure '/' goes to the store app
     
 ]

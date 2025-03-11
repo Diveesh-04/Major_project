@@ -1,0 +1,38 @@
+{% extends 'store/base.html' %}
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <!-- Product Image -->
+        <div class="col-md-6">
+            <img src="{{ product.image.url }}" class="img-fluid" alt="{{ product.name }}">
+        </div>
+
+        <!-- Product Details -->
+        <div class="col-md-6">
+            <h2>{{ product.name }}</h2>
+            <p><strong>Category:</strong> {{ product.category.name }}</p>
+            <p><strong>Price:</strong> ₹{{ product.price }}</p>
+            <p><strong>Description:</strong> {{ product.description }}</p>
+            <p><strong>Notes:</strong> {{ product.top_note }} | {{ product.heart_note }} | {{ product.base_note }}</p>
+
+            <button class="btn btn-success" onclick="addToCart({{ product.id }})">Add to Cart</button>
+        </div>
+    </div>
+</div>
+
+<script>
+function addToCart(productId) {
+    fetch('/api/cart/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': '{{ csrf_token }}'
+        },
+        body: JSON.stringify({ product: productId, quantity: 1 })
+    })
+    .then(response => response.json())
+    .then(data => alert('Added to Cart'))
+    .catch(error => console.error('Error:', error));
+}
+</script>
+{% endblock %}
