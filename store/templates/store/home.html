@@ -1,12 +1,30 @@
-{% extends 'store/base.html' %}  <!-- If you have a base template, otherwise remove this line -->
+{% extends 'store/base.html' %}
 
 {% block content %}
 <div class="container text-center mt-5">
     <h1>Welcome to Isak Perfume Store</h1>
     <p>Your one-stop shop for premium attars and perfumes.</p>
-    
-    <div class="mt-4">
-        <a href="{% url 'category_page' category_id=1 %}" class="btn btn-primary">Browse Products</a>
+
+    <!-- Categories Grid -->
+    <h4 id="divider">SHOP BY CATEGORY</h4>
+    <div class="row mt-4">
+        {% for category in categories %}
+        <div class="col-md-3 mb-4">
+            <div class="card h-100" id="cardfixed">
+                {% if category.image %}
+                    <img src="{{ category.image.url }}" class="card-img-top" alt="{{ category.name }}">
+                {% else %}
+                    <img src="https://via.placeholder.com/300" class="card-img-top" alt="No Image Available">
+                {% endif %}
+                <div class="card-body text-center">
+                    <h5 class="card-title" id="cardTitle">{{ category.name }}</h5>
+                    <a href="{% url 'category_page' category.id %}" class="btn btn-light">VIEW MORE</a>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <p class="text-center">No categories available.</p>
+        {% endfor %}
     </div>
 </div>
 {% endblock %}

@@ -65,9 +65,10 @@ def cart_view(request):
 # Category Page View
 
 def category_list(request, category_id):
-    category = get_object_or_404(Category, id=category_id)  # ✅ Fetch the category safely
-    products = Product.objects.filter(category=category)  # ✅ Get products for this category
+    category = get_object_or_404(Category, id=category_id)  # Fetch the category safely
+    products = Product.objects.filter(category=category)  # Get products for this category
     return render(request, 'store/category.html', {'category': category, 'products': products})
+
 
 # Product Detail View
 def product_detail(request, product_id):

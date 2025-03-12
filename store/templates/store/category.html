@@ -1,7 +1,7 @@
 {% extends 'store/base.html' %}
 {% block content %}
 <div class="container mt-4">
-    <h2 class="text-center">Attar Collection</h2>
+    <h2 class="text-center">{{ category.name }} Collection</h2>  <!-- Dynamic category name -->
     <div class="row">
         {% for product in products %}
         <div class="col-md-4 mb-4">
@@ -19,7 +19,7 @@
             </div>
         </div>
         {% empty %}
-        <p class="text-center">No products available.</p>
+        <p class="text-center">No products available in this category.</p>
         {% endfor %}
     </div>
 </div>
