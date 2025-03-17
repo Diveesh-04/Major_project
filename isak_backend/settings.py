@@ -57,7 +57,7 @@ ROOT_URLCONF = 'isak_backend.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-              'DIRS': [os.path.join(BASE_DIR, 'store', 'templates')],  # Update this
+        'DIRS': [os.path.join(BASE_DIR, 'store', 'templates')],  # Update this
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -94,14 +94,19 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_TZ = True
 
+# 🔹 STATIC & MEDIA FILES CONFIGURATION
+
 # Static files (CSS, JavaScript, Images)
 STATIC_URL = '/static/'
-STATIC_ROOT = BASE_DIR / "staticfiles"
 
 if DEBUG:  # Only in development
     STATICFILES_DIRS = [BASE_DIR / "static"]
 else:  # For production
     STATIC_ROOT = BASE_DIR / "static"
+
+# ✅ Media Files (for Product & Category Images)
+MEDIA_URL = '/media/'  
+MEDIA_ROOT = BASE_DIR / 'media'  
 
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

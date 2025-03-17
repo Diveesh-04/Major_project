@@ -14,6 +14,41 @@
             <p><strong>Price:</strong> ₹{{ product.price }}</p>
             <p><strong>Description:</strong> {{ product.description }}</p>
             <p><strong>Notes:</strong> {{ product.top_note }} | {{ product.heart_note }} | {{ product.base_note }}</p>
+            <form id="add-to-cart-form" action="{% url 'add_to_cart' product.id %}" method="POST">
+                {% csrf_token %}
+                
+                <label for="quantity">Quantity:</label>
+                <div class="quantity-container">
+                    <button type="button" onclick="decreaseQuantity()">-</button>
+                    <input type="number" id="quantity" name="quantity" value="1" min="1">
+                    <button type="button" onclick="increaseQuantity()">+</button>
+                </div>
+            </form>
+            <style>
+                .quantity-container {
+                    display: flex;
+                    align-items: center;
+                }
+                
+                .quantity-container button {
+                    width: 30px;
+                    height: 30px;
+                    font-size: 18px;
+                    border: 1px solid #ccc;
+                    background-color: #f8f8f8;
+                    cursor: pointer;
+                }
+                
+                .quantity-container input {
+                    width: 50px;
+                    text-align: center;
+                    font-size: 16px;
+                    border: 1px solid #ccc;
+                    margin: 0 5px;
+                }
+                </style>
+            
+            
 
             <button class="btn btn-success" onclick="addToCart({{ product.id }})">Add to Cart</button>
         </div>
@@ -21,18 +56,38 @@
 </div>
 
 <script>
-function addToCart(productId) {
-    fetch('/api/cart/', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRFToken': '{{ csrf_token }}'
-        },
-        body: JSON.stringify({ product: productId, quantity: 1 })
-    })
-    .then(response => response.json())
-    .then(data => alert('Added to Cart'))
-    .catch(error => console.error('Error:', error));
-}
+    function addToCart(productId) {
+        fetch('/api/cart/add/' + productId + '/', {  // ✅ Correct API URL
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': '{{ csrf_token }}'
+            },
+            body: JSON.stringify({ quantity: 1 })  // ✅ Sending correct data
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to add to cart');
+            }
+            return response.json();
+        })
+        .then(data => {
+            alert('Added to Cart');
+            window.location.href = "{% url 'view_cart' %}";  // ✅ Redirect to cart page
+        })
+        .catch(error => console.error('Error:', error));
+    }
+
+    function increaseQuantity() {
+        let qtyInput = document.getElementById('quantity');
+        qtyInput.value = parseInt(qtyInput.value) + 1;
+    }
+    
+    function decreaseQuantity() {
+        let qtyInput = document.getElementById('quantity');
+        if (parseInt(qtyInput.value) > 1) {
+            qtyInput.value = parseInt(qtyInput.value) - 1;
+        }
+    }
 </script>
 {% endblock %}

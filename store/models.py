@@ -3,6 +3,7 @@ from django.contrib.auth.models import AbstractUser
 from django.conf import settings
 from django.utils.text import slugify
 
+# Custom User Model
 class CustomUser(AbstractUser):
     phone_number = models.CharField(max_length=15, blank=True, null=True)
     date_of_birth = models.DateField(blank=True, null=True)
@@ -13,8 +14,6 @@ class CustomUser(AbstractUser):
         null=True
     )
     is_email_verified = models.BooleanField(default=False)
-    def __str__(self):
-        return self.username
 
     def __str__(self):
         return self.username
@@ -23,6 +22,7 @@ class CustomUser(AbstractUser):
 class Category(models.Model):
     name = models.CharField(max_length=100, unique=True)
     slug = models.SlugField(unique=True)
+    image = models.ImageField(upload_to='category_images/', null=True, blank=True)  # Image field added
 
     def __str__(self):
         return self.name
@@ -36,8 +36,9 @@ class Product(models.Model):
     price = models.DecimalField(max_digits=10, decimal_places=2)
     stock = models.PositiveIntegerField(default=0)
     available = models.BooleanField(default=True)
+    image = models.ImageField(upload_to='product_images/', null=True, blank=True)  # Image field added
 
-    # New Fields for Perfume Details
+    # Perfume Details
     top_note = models.CharField(max_length=255, blank=True, null=True)
     heart_note = models.CharField(max_length=255, blank=True, null=True)
     base_note = models.CharField(max_length=255, blank=True, null=True)
@@ -53,10 +54,13 @@ class Product(models.Model):
 
 # Cart Model
 class Cart(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, blank=True)  # User can be null for guests
+    session_id = models.CharField(max_length=100, null=True, blank=True)  # Stores session ID for guest users
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField(default=1)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"{self.user.username} - {self.product.name} ({self.quantity})"
+        if self.user:
+            return f"{self.user.username} - {self.product.name} ({self.quantity})"
+        return f"Guest ({self.session_id}) - {self.product.name} ({self.quantity})"

@@ -1,7 +1,10 @@
+from django.conf import settings
+from django.conf.urls.static import static
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter  
 from rest_framework_simplejwt.views import TokenRefreshView
 from django.contrib.auth.views import LogoutView
+from . import views 
 from .views import (
     CategoryViewSet, 
     ProductViewSet, 
@@ -9,16 +12,20 @@ from .views import (
     RegisterView, 
     CustomTokenObtainPairView, 
     home, 
-    cart_view,
     category_list,
-    product_detail
+    product_detail,
+    add_to_cart,
+    view_cart,
+    remove_from_cart,
+    about,
+    checkout,
 )
 
 # Create a router for ViewSets
 router = DefaultRouter()
 router.register(r'categories', CategoryViewSet)
 router.register(r'products', ProductViewSet)
-router.register(r'cart', CartViewSet)
+router.register(r'cart', CartViewSet)  # Cart API
 
 # Define URL patterns
 urlpatterns = [
@@ -28,6 +35,13 @@ urlpatterns = [
     path('api/login/', CustomTokenObtainPairView.as_view(), name='login'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     
+      # Cart API
+    path('api/cart/add/<int:product_id>/', add_to_cart, name='add_to_cart'),  # ✅ API Add to Cart
+
+    # Frontend Views
+    path('cart/', view_cart, name='cart'),  # ✅ Cart Page
+    path('checkout/',  views.checkout, name='checkout'),
+    
     # Authentication & Logout
     path('logout/', LogoutView.as_view(), name='logout'),
 
@@ -35,6 +49,17 @@ urlpatterns = [
     path('', home, name='home'),  # Homepage
     path('categories/', category_list, name='category_list'),  # Category listing
     path('category/<int:category_id>/', category_list, name='category_page'),  # Category detail
-     path('product/<int:product_id>/', product_detail, name='product_detail'),
-    path('cart/', cart_view, name='cart'),  # Cart Page (Fix for NoReverseMatch error)
+    path('product/<int:product_id>/', product_detail, name='product_detail'),
+    
+    # Cart URLs
+    path('cart/', view_cart, name='view_cart'),  # ✅ Fixed "view_cart" name
+    path('cart/add/<int:product_id>/', add_to_cart, name='add_to_cart'),  # Add to Cart
+    path('cart/remove/<int:cart_id>/', remove_from_cart, name='remove_from_cart'),  # Remove from Cart
+
+    # About Page
+    path('about/', about, name='about'),
 ]
+
+# ✅ Serve media files in development mode
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)                        
