@@ -3,7 +3,7 @@ from django.conf.urls.static import static
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter  
 from rest_framework_simplejwt.views import TokenRefreshView
-from django.contrib.auth.views import LogoutView
+from .views import register, login_user, logout_user
 from . import views 
 from .views import (
     CategoryViewSet, 
@@ -19,13 +19,14 @@ from .views import (
     remove_from_cart,
     about,
     checkout,
+    update_cart_quantity,
 )
 
 # Create a router for ViewSets
 router = DefaultRouter()
 router.register(r'categories', CategoryViewSet)
 router.register(r'products', ProductViewSet)
-router.register(r'cart', CartViewSet)  # Cart API
+router.register(r'cart', CartViewSet,basename='cart')  # Cart API
 
 # Define URL patterns
 urlpatterns = [
@@ -37,13 +38,17 @@ urlpatterns = [
     
       # Cart API
     path('api/cart/add/<int:product_id>/', add_to_cart, name='add_to_cart'),  # ✅ API Add to Cart
+    path('add-to-cart/<int:product_id>/', add_to_cart, name='add_to_cart'),
+      path('update-cart-quantity/', update_cart_quantity, name='update_cart_quantity'),
 
     # Frontend Views
     path('cart/', view_cart, name='cart'),  # ✅ Cart Page
     path('checkout/',  views.checkout, name='checkout'),
     
     # Authentication & Logout
-    path('logout/', LogoutView.as_view(), name='logout'),
+   path("register/", register, name="register"),
+    path("login/", login_user, name="login"),
+    path("logout/", logout_user, name="logout"),
 
     # Frontend Views
     path('', home, name='home'),  # Homepage
