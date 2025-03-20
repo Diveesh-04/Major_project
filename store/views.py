@@ -131,6 +131,7 @@ def login_user(request):
 
     return render(request, "store/login.html")
 
+
 def logout_user(request):
     logout(request)
     return redirect("home")  # Correctly redirecting to the home page) 
@@ -159,6 +160,10 @@ def add_to_cart(request, product_id):
                 return JsonResponse({'error': 'Quantity must be at least 1'}, status=400)
 
             product = get_object_or_404(Product, id=product_id)
+            
+            if not request.user.is_authenticated:
+                return JsonResponse({'error': 'You must be logged in to add items to the cart.', 'redirect': '/login/'}, status=403)
+
 
             if request.user.is_authenticated:
                 cart_item, created = Cart.objects.get_or_create(user=request.user, product=product)
@@ -211,3 +216,8 @@ def checkout(request):
     cart_items = Cart.objects.filter(user=request.user)
     total_price = sum(item.product.price * item.quantity for item in cart_items)
     return render(request, 'store/checkout.html', {'cart_items': cart_items, 'total_price': total_price})
+
+# ------------------ LOGIN MODAL ------------------
+
+def login_modal(request):
+    return render(request, 'store/login_modal.html')

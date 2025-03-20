@@ -4,6 +4,7 @@ from django.urls import path, include
 from rest_framework.routers import DefaultRouter  
 from rest_framework_simplejwt.views import TokenRefreshView
 from .views import register, login_user, logout_user
+from django.contrib.auth.decorators import login_required
 from . import views 
 from .views import (
     CategoryViewSet, 
@@ -35,6 +36,7 @@ urlpatterns = [
     path('api/register/', RegisterView.as_view(), name='register'),
     path('api/login/', CustomTokenObtainPairView.as_view(), name='login'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+     path('cart/add/<int:product_id>/', login_required(add_to_cart), name='add_to_cart'),
     
       # Cart API
     path('api/cart/add/<int:product_id>/', add_to_cart, name='add_to_cart'),  # ✅ API Add to Cart

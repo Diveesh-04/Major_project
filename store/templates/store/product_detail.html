@@ -26,7 +26,7 @@
                     <button type="button" onclick="changeQuantity(1)">+</button>
                 </div>
 
-                <button type="button" class="btn btn-success mt-3" onclick="addToCart({{ product.id }})">
+                <button type="button" class="btn btn-success mt-3" onclick="handleAddToCart({{ product.id }})">
                     Add to Cart
                 </button>
             </form>
@@ -58,6 +58,21 @@
     </div>
 </div>
 
+<!-- Login Modal -->
+<div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content text-center p-4">
+            <span class="close position-absolute top-0 end-0 p-3" data-bs-dismiss="modal" style="cursor: pointer;">&times;</span>
+            <h2 class="mb-2">Welcome Back!</h2>
+            <p class="mb-3">Please log in to continue.</p>
+            <a href="{% url 'login' %}" class="btn btn-primary w-100">Login</a>
+            <div class="text-center mt-3">
+                Don't have an account? <a href="{% url 'register' %}" class="fw-bold">Sign up</a>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
     function changeQuantity(amount) {
         let quantityInput = document.getElementById("quantity");
@@ -68,17 +83,29 @@
         }
     }
 
-    function addToCart(productId) {
-        let quantity = document.getElementById("quantity").value;  // ✅ Get selected quantity
-        let csrfToken = document.querySelector("[name=csrfmiddlewaretoken]").value;  // ✅ Get CSRF token
+    function handleAddToCart(productId) {
+        let isAuthenticated = {{ request.user.is_authenticated|lower }};  // Check if user is logged in
 
-        fetch(`/api/cart/add/${productId}/`, {  // ✅ Make sure this URL matches your Django view
+        if (!isAuthenticated) {
+            let loginModal = new bootstrap.Modal(document.getElementById("loginModal"));
+            loginModal.show();
+            return;
+        }
+
+        addToCart(productId);
+    }
+
+    function addToCart(productId) {
+        let quantity = document.getElementById("quantity").value;
+        let csrfToken = document.querySelector("[name=csrfmiddlewaretoken]").value;
+
+        fetch(`/api/cart/add/${productId}/`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 'X-CSRFToken': csrfToken
             },
-            body: JSON.stringify({ quantity: quantity })  // ✅ Sending correct quantity
+            body: JSON.stringify({ quantity: quantity })
         })
         .then(response => {
             if (!response.ok) {
@@ -88,7 +115,7 @@
         })
         .then(data => {
             alert('Added to Cart');
-            window.location.href = "{% url 'view_cart' %}";  // ✅ Redirect to cart page
+            window.location.href = "{% url 'view_cart' %}";
         })
         .catch(error => console.error('Error:', error));
     }
