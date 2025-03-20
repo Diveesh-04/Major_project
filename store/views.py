@@ -133,7 +133,7 @@ def login_user(request):
 
 def logout_user(request):
     logout(request)
-    return redirect('home.html') 
+    return redirect("home")  # Correctly redirecting to the home page) 
 
 # ------------------ CART FUNCTIONALITIES ------------------
 
