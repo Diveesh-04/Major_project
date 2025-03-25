@@ -77,7 +77,7 @@ Orders:
 
 ## Project Structure
 
-isak_backend/               # Root project directory
+﻿isak_backend/               # Root project directory
 ├── manage.py               # Django project management script
 ├── requirements.txt        # Project dependencies
 ├── db.sqlite3              # SQLite database (if used)
@@ -88,7 +88,7 @@ isak_backend/               # Root project directory
 │   └── js/
 │       └── scripts.js      # JavaScript files
 ├── store/                  # Main app for handling products, cart, and orders
-│   ├── __init__.py
+│   ├── init.py
 │   ├── admin.py            # Django admin configurations
 │   ├── apps.py             # App configuration
 │   ├── models.py           # Database models (Product, Category, Cart, Order, etc.)
@@ -102,10 +102,10 @@ isak_backend/               # Root project directory
 │   │   ├── home.html       # Home page template
 │   │   ├── product_detail.html  # Product detail page
 │   │   ├── cart.html       # Shopping cart page
-│   │   └── checkout.html   # Checkout page
-│   │   └── order_suceess.html # completion page
-│   │   └── login.html  # login page
-│   │   └── register.html # Sign up page
+│   │   ├── checkout.html   # Checkout page
+│   │   ├── order_success.html  # Order completion page
+│   │   ├── login.html      # Login page
+│   │   └── register.html   # Sign-up page
 │   ├── static/             # Static files specific to the store app
 │   │   ├── css/
 │   │   │   └── store_styles.css
@@ -114,12 +114,12 @@ isak_backend/               # Root project directory
 │   ├── forms.py            # Django forms (if using forms)
 │   ├── signals.py          # Django signals (if any)
 │   └── migrations/         # Database migrations
-│       ├── __init__.py
+│       ├── init.py
 │       ├── 0001_initial.py
 │       ├── 0002_some_change.py
-│       └── ...
-├── api/                    # API app for handling authentication, cart, etc. (if separate)
-│   ├── __init__.py
+│       └── …
+├── api/                    # API app for handling authentication, cart, etc.
+│   ├── init.py
 │   ├── views.py
 │   ├── urls.py
 │   ├── serializers.py
@@ -132,7 +132,7 @@ isak_backend/               # Root project directory
 │   ├── forms.py
 │   └── migrations/
 ├── users/                  # Custom user authentication app (if separate)
-│   ├── __init__.py
+│   ├── init.py
 │   ├── models.py
 │   ├── views.py
 │   ├── urls.py
@@ -146,15 +146,15 @@ isak_backend/               # Root project directory
 │   ├── utils.py
 │   └── migrations/
 ├── isak_backend/            # Main Django project settings
-│   ├── __init__.py
+│   ├── init.py
 │   ├── asgi.py
 │   ├── wsgi.py
 │   ├── settings.py         # Main Django settings (including database, static files, etc.)
 │   ├── urls.py             # Root URL configuration
 │   └── middleware.py       # Custom middleware (if any)
 └── logs/                    # Log files (if needed)
-    ├── debug.log
-    └── error.log
+├── debug.log
+└── error.log
 
 ---
 
