@@ -1,26 +1,62 @@
 {% extends 'store/base.html' %}
 {% block content %}
-<div class="container mt-4">
-    <h2 class="text-center">{{ category.name }} Collection</h2>  <!-- Dynamic category name -->
-    <div class="row">
+
+<!-- Category Banner with Dynamic Image -->
+<div style="position: relative; width: 100%; height: 110vh; overflow: hidden; margin-top: -80px;">
+    {% if category.image %}
+        <img src="{{ category.image.url }}" alt="{{ category.name }}" 
+             style="width: 100%; height: 100%; object-fit: cover;">
+    {% else %}
+        <img src="https://via.placeholder.com/1200x500" alt="No Image Available" 
+             style="width: 100%; height: 100%; object-fit: cover;">
+    {% endif %}
+
+    <!-- Black Tint Overlay -->
+    <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.4);"></div>
+
+    <!-- Text Overlay -->
+    <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: white; font-size: 32px; font-weight: bold; text-align: center;">
+        <h2>{{ category.name }}</h2>
+    </div>
+</div>
+
+
+<br>
+
+<!-- Product Count -->
+<div class="noOfItems" style="text-align: center;">
+    <h6 style="font-size: 12px; color: grey;">{{ products|length }} PRODUCTS</h6>
+    <hr style="width: 50%; margin: auto;">
+</div>
+
+<!-- Product Grid (3 products on the first row, 2 on the second row) -->
+<div class="container">
+    <div class="row justify-content-center">
         {% for product in products %}
-        <div class="col-md-4 mb-4">
-            <div class="card h-100">
-                {% if product.image %}
-                    <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}">
-                {% else %}
-                    <img src="https://via.placeholder.com/300" class="card-img-top" alt="No Image Available">
-                {% endif %}
-                <div class="card-body text-center">
-                    <h5 class="card-title">{{ product.name }}</h5>
-                    <p class="card-text">Price: ₹{{ product.price }}</p>
-                    <a href="{% url 'product_detail' product.id %}" class="btn btn-primary">View Details</a>
+        <div class="{% if forloop.counter <= 3 %}col-md-4{% else %}col-md-4{% endif %} mb-4 d-flex justify-content-center">
+            <div class="card" style="border: none; text-align: center; width: 250px;">
+                <a href="{% url 'product_detail' product.id %}" style="text-decoration: none;">
+                    {% if product.image %}
+                        <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}" style="width: 250px; height: 250px; object-fit: cover; border-radius: 10px;">
+                    {% else %}
+                        <img src="https://via.placeholder.com/250" class="card-img-top" alt="No Image Available" style="width: 250px; height: 250px; object-fit: cover; border-radius: 10px;">
+                    {% endif %}
+                </a>
+                <div class="card-body">
+                    <a href="{% url 'product_detail' product.id %}" style="text-decoration: none; color: black;">
+                        <h6 class="card-title" style="font-size: 14px; font-weight: bold;">{{ product.name }}</h6>
+                    </a>
+                    <p class="card-text" style="font-size: 14px; color: black;">Rs. {{ product.price }}</p>
                 </div>
             </div>
         </div>
         {% empty %}
-        <p class="text-center">No products available in this category.</p>
+        <p class="text-center" style="width: 100%; font-size: 16px;">No products available in this category.</p>
         {% endfor %}
     </div>
 </div>
+
+<!-- Divider for Separation -->
+<hr style="margin: 50px 0; border-top: 2px solid #ddd;">
+
 {% endblock %}

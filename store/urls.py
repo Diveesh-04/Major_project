@@ -13,6 +13,7 @@ from .views import (
     RegisterView, 
     CustomTokenObtainPairView, 
     home, 
+    category_page,
     category_list,
     product_detail,
     add_to_cart,
@@ -21,6 +22,9 @@ from .views import (
     about,
     checkout,
     update_cart_quantity,
+    create_razorpay_order,
+    payment_success, 
+    order_success,
 )
 
 # Create a router for ViewSets
@@ -29,6 +33,7 @@ router.register(r'categories', CategoryViewSet)
 router.register(r'products', ProductViewSet)
 router.register(r'cart', CartViewSet,basename='cart')  # Cart API
 
+
 # Define URL patterns
 urlpatterns = [
     # API Endpoints
@@ -36,12 +41,18 @@ urlpatterns = [
     path('api/register/', RegisterView.as_view(), name='register'),
     path('api/login/', CustomTokenObtainPairView.as_view(), name='login'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
-     path('cart/add/<int:product_id>/', login_required(add_to_cart), name='add_to_cart'),
+    path('cart/add/<int:product_id>/', login_required(add_to_cart), name='add_to_cart'),
+    path("create_razorpay_order/", create_razorpay_order, name="create_razorpay_order"),
+    path("checkout/", checkout, name="checkout"),
+    path("checkout/<int:order_id>/", checkout, name="checkout"),
+    path("payment-success/", payment_success, name="payment_success"),
+    path("order-success/", order_success, name="order_success"),
+
     
       # Cart API
     path('api/cart/add/<int:product_id>/', add_to_cart, name='add_to_cart'),  # ✅ API Add to Cart
     path('add-to-cart/<int:product_id>/', add_to_cart, name='add_to_cart'),
-      path('update-cart-quantity/', update_cart_quantity, name='update_cart_quantity'),
+    path('update-cart-quantity/', update_cart_quantity, name='update_cart_quantity'),
 
     # Frontend Views
     path('cart/', view_cart, name='cart'),  # ✅ Cart Page
@@ -54,9 +65,15 @@ urlpatterns = [
 
     # Frontend Views
     path('', home, name='home'),  # Homepage
-    path('categories/', category_list, name='category_list'),  # Category listing
+    path("categories/", category_list, name="category_list"),  # Category listing
+    path("categories/<int:category_id>/", category_list, name="category_detail"),  # Specific category
     path('category/<int:category_id>/', category_list, name='category_page'),  # Category detail
     path('product/<int:product_id>/', product_detail, name='product_detail'),
+    path('category/<int:id>/',category_list, name='category_page'),
+    path("category/", views.category_page, name="category_page"),  # New route that doesn't need an ID
+    path("category/<int:id>/", views.category_page, name="category_page"),
+   
+    
     
     # Cart URLs
     path('cart/', view_cart, name='view_cart'),  # ✅ Fixed "view_cart" name

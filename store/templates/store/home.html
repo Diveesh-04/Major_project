@@ -1,44 +1,327 @@
 {% extends 'store/base.html' %}
+{% load static %}
 
 {% block content %}
-<div class="container text-center mt-5">
-    <h1>Welcome to Isak Perfume Store</h1>
-    <p>Your one-stop shop for premium attars and perfumes.</p>
 
-    <!-- Categories Grid -->
-    <h4 id="divider">SHOP BY CATEGORY</h4>
-    <div class="row mt-4">
+<!-- Include Bootstrap -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<style>
+   
+</style>
+
+<!-- Bootstrap Carousel -->
+<div id="carouselArrows" class="carousel slide" data-bs-ride="carousel" style="width: 100vw; height: 100vh; overflow: hidden;">
+  
+    <!-- Indicators -->
+    <div class="carousel-indicators">
+      <button type="button" data-bs-target="#carouselArrows" data-bs-slide-to="0" class="active"></button>
+      <button type="button" data-bs-target="#carouselArrows" data-bs-slide-to="1"></button>
+      <button type="button" data-bs-target="#carouselArrows" data-bs-slide-to="2"></button>
+      <button type="button" data-bs-target="#carouselArrows" data-bs-slide-to="3"></button>
+    </div>
+  
+    <!-- Carousel Items -->
+    <div class="carousel-inner" style="width: 100%; height: 100vh;">
+      <div class="carousel-item active" style="background-image: url('{% static "images/s1.jpg" %}'); background-size: cover; background-position: center; height: 100vh;"></div>
+      <div class="carousel-item" style="background-image: url('{% static "images/s2.webp" %}'); background-size: cover; background-position: center; height: 100vh;"></div>
+      <div class="carousel-item" style="background-image: url('{% static "images/s3.webp" %}'); background-size: cover; background-position: center; height: 100vh;"></div>
+      <div class="carousel-item" style="background-image: url('{% static "images/s4.webp" %}'); background-size: cover; background-position: center; height: 100vh;"></div>
+    </div>
+  
+    <!-- Carousel Controls -->
+    <button class="carousel-control-prev" type="button" data-bs-target="#carouselArrows" data-bs-slide="prev">
+      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Previous</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#carouselArrows" data-bs-slide="next">
+      <span class="carousel-control-next-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Next</span>
+    </button>
+  
+  </div>
+  
+  <!-- Bootstrap JS (Ensure This is Included) -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- SHOP BY CATEGORY Section (Excluding "Her/Him" and "Make Perfume") -->
+<h4 id="divider" style="text-align: center; font-weight: bold; margin-top: 40px;">SHOP BY CATEGORY</h4>
+
+<div class="container">
+    <div class="row justify-content-center">
+        
         {% for category in categories %}
-        <div class="col-md-3 mb-4">
-            <div class="card h-100" id="cardfixed">
-                {% if category.image %}
-                    <img src="{{ category.image.url }}" class="card-img-top" alt="{{ category.name }}">
-                {% else %}
-                    <img src="https://via.placeholder.com/300" class="card-img-top" alt="No Image Available">
-                {% endif %}
+        {% if category.name != "Her/Him" and category.name != "Make Perfume" %}  <!-- Exclude these -->
+        
+        <div class="col-md-3 col-sm-6 mb-4">
+            <div class="card category-card shadow-sm border-0 position-relative">
+                
+                <!-- Background Image with Hover Effect -->
+                {% with category.name|lower|slugify as image_name %}
+                <div class="category-bg" style="background-image: url('{% static "images/" %}{{ image_name }}.jpg');"></div>
+                {% endwith %}
+
+                <!-- Black Transparent Overlay -->
+                <div class="overlay"></div>
+
+                <!-- Text & Button Overlay -->
                 <div class="card-body text-center">
-                    <h5 class="card-title" id="cardTitle">{{ category.name }}</h5>
+                    <h5 class="card-title text-white">{{ category.name }}</h5>
                     <a href="{% url 'category_page' category.id %}" class="btn btn-light">VIEW MORE</a>
+                </div>
+
+            </div>
+        </div>
+
+        {% endif %}
+        {% endfor %}
+
+    </div>
+</div>
+
+<!-- ✅ CSS for Hover Effect -->
+<style>
+    .category-card {
+        border-radius: 10px;
+        overflow: hidden;
+        height: 280px;
+        position: relative;
+        cursor: pointer;
+    }
+
+    .category-bg {
+        width: 100%;
+        height: 100%;
+        background-size: cover;
+        background-position: center;
+        transition: transform 0.4s ease-in-out;
+        position: absolute;
+        top: 0;
+        left: 0;
+    }
+
+    .category-card:hover .category-bg {
+        transform: scale(1.1);
+    }
+
+    .overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+    }
+
+    .card-body {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 10;
+    }
+
+    .card-title {
+        font-weight: bold;
+        text-transform: uppercase;
+    }
+
+    .btn {
+        border-radius: 5px;
+        font-weight: bold;
+    }
+</style>
+
+<!-- Divider for Separation -->
+<hr style="margin: 50px 0; border-top: 2px solid #ddd;">
+
+<!-- SPECIAL CATEGORIES Section -->
+<h2 style="text-align: center; font-size: smaller; color: rgba(29, 26, 26, 0.773);">FEATURED COLLECTION</h2>
+<h2 style="text-align:center; font-size: 26px; padding-top: 20px; padding-bottom: 4px;">
+    <span class="underline">TRENDING</span> &nbsp;&nbsp;COLLECTION
+</h2>
+
+<div id="categoryCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="3000" style="width: 100%;">
+  
+    <!-- Indicators -->
+    <div class="carousel-indicators">
+        {% for category in categories %}
+        {% if category.name == "Her/Him" or category.name == "Make Perfume" %}
+            <button type="button" data-bs-target="#categoryCarousel" data-bs-slide-to="{{ forloop.counter0 }}" class="{% if forloop.first %}active{% endif %}"></button>
+        {% endif %}
+        {% endfor %}
+    </div>
+
+    <!-- Carousel Items -->
+    <div class="carousel-inner">
+        {% for category in categories %}
+        {% if category.name == "Her/Him" or category.name == "Make Perfume" %}
+        <div class="carousel-item {% if forloop.first %}active{% endif %}">
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-md-3 col-sm-6 mb-4">
+                        <div class="card shadow-sm border-0" style="border-radius: 10px; overflow: hidden;">
+                            {% if category.image %}
+                                <img src="{{ category.image.url }}" alt="{{ category.name }}" class="card-img-top" style="width: 100%; height: 250px; object-fit: cover;">
+                            {% else %}
+                                <img src="{% static 'images/placeholder.jpg' %}" alt="No Image Available" class="card-img-top" style="width: 100%; height: 250px; object-fit: cover;">
+                            {% endif %}
+                            <div class="card-body text-center">
+                                <h5 class="card-title" style="font-weight: bold;">{{ category.name }}</h5>
+                                <a href="{% url 'category_page' category.id %}" class="btn btn-light" style="border-radius: 5px;">VIEW MORE</a>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-        {% empty %}
-        <p class="text-center">No categories available.</p>
+        {% endif %}
         {% endfor %}
     </div>
+
+    <!-- Carousel Controls -->
+    <button class="carousel-control-prev" type="button" data-bs-target="#categoryCarousel" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+    </button>
+
+    <button class="carousel-control-next" type="button" data-bs-target="#categoryCarousel" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+    </button>
+
 </div>
- 
+
+<!-- Scrollable Products Section -->
+<div style="display: flex; align-items: center; position: relative; width: 100%; overflow: hidden;">
+    <button id="scroll-left" 
+        style="background-color: rgba(0, 0, 0, 0.5); color: white; border: none; padding: 10px; cursor: pointer; position: absolute; top: 50%; transform: translateY(-50%); left: 0; z-index: 10;">
+        &#10094;
+    </button>
+
+    <div id="product-slider" 
+        style="display: flex; gap: 15px; overflow-x: auto; scroll-behavior: smooth; scrollbar-width: none; -ms-overflow-style: none; width: 80%; margin: auto;">
+        
+        {% for product in products %}
+        <div style="min-width: calc(25% - 15px); max-width: calc(25% - 15px); flex: 0 0 auto; border: 1px solid #ddd; padding: 10px; text-align: center;">
+            <a href="{% url 'product_detail' product.id %}">
+                {% if product.image %}
+                    <img src="{{ product.image.url }}" style="width: 100%; height: auto; display: block;" alt="{{ product.name }}">
+                {% else %}
+                    <img src="https://via.placeholder.com/300" style="width: 100%; height: auto; display: block;" alt="No Image Available">
+                {% endif %}
+            </a>
+            <div>
+                <a href="{% url 'product_detail' product.id %}" style="text-decoration: none; color: black; font-weight: bold;">
+                    <p>{{ product.name }}</p>
+                </a>
+                <span style="display: block; font-size: small; color: rgb(125, 120, 120);">₹{{ product.price }}</span>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <button id="scroll-right" 
+        style="background-color: rgba(0, 0, 0, 0.5); color: white; border: none; padding: 10px; cursor: pointer; position: absolute; top: 50%; transform: translateY(-50%); right: 0; z-index: 10;">
+        &#10095;
+    </button>
+</div>
+
+<!-- JavaScript for Auto-Scroll & Manual Scroll -->
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        let slider = document.getElementById("product-slider");
+        let scrollAmount = slider.clientWidth / 4; // Scroll by one card width
+
+        function autoScroll() {
+            if (slider.scrollLeft + slider.clientWidth >= slider.scrollWidth) {
+                slider.scrollLeft = 0; // Reset to start
+            } else {
+                slider.scrollLeft += scrollAmount;
+            }
+        }
+
+        let interval = setInterval(autoScroll, 3000); // Auto-scroll every 3 sec
+
+        // Manual Scroll Controls
+        document.getElementById("scroll-left").addEventListener("click", function () {
+            slider.scrollLeft -= scrollAmount;
+            clearInterval(interval);
+            interval = setInterval(autoScroll, 3000);
+        });
+
+        document.getElementById("scroll-right").addEventListener("click", function () {
+            slider.scrollLeft += scrollAmount;
+            clearInterval(interval);
+            interval = setInterval(autoScroll, 3000);
+        });
+    });
+</script>
+
+<!-- View All Perfumes Button -->
+<div style="text-align: center; margin-top: 15px;">
+    <a href="{% url 'category_list' %}?filter=perfume" 
+       class="btn btn-dark" 
+       style="padding: 10px 20px; border-radius: 5px;">
+        View All
+    </a>
+</div>
+
+<!-- Divider for Separation -->
+<hr style="margin: 50px 0; border-top: 2px solid #ddd;">
+
+<!-- FOR HIM & FOR HER Section -->
+<div class="container-fluid d-flex justify-content-center align-items-center" style="height: 100vh; padding: 20px;">
+    <div class="row w-100 justify-content-center" style="max-width: 90vw; gap: 30px;">
+        
+        <!-- FOR HIM SECTION -->
+        <div class="col-md-5 col-12 p-0" style="position: relative; height: 85vh; border-radius: 15px; overflow: hidden;">
+            <a href="{% url 'category_list' %}?filter=him" style="position: absolute; width: 100%; height: 100%; z-index: 10;"></a>
+            <img src="{% static 'images/for him.webp' %}" alt="For Him" style="width: 100%; height: 100%; object-fit: cover; border-radius: 15px; transition: transform 0.3s;">
+             <!-- Black Transparent Overlay -->
+             <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5);"></div>
+            <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 28px; color: white;  padding: 20px 50px; border-radius: 10px; text-align: center; text-transform: uppercase;">
+                FOR HIM
+            </div>
+        </div>
+
+        <!-- FOR HER SECTION -->
+        <div class="col-md-5 col-12 p-0" style="position: relative; height: 85vh; border-radius: 15px; overflow: hidden;">
+            <a href="{% url 'category_list' %}?filter=her" style="position: absolute; width: 100%; height: 100%; z-index: 10;"></a>
+            <img src="{% static 'images/for her.webp' %}" alt="For Her" style="width: 100%; height: 100%; object-fit: cover; border-radius: 15px; transition: transform 0.3s;">
+             <!-- Black Transparent Overlay -->
+             <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5);"></div>
+            <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 28px; color: white;  padding: 20px 50px; border-radius: 10px; text-align: center; text-transform: uppercase;">
+                FOR HER
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- Divider for Separation -->
+<hr style="margin: 50px 0; border-top: 2px solid #ddd;">
+
+<!-- JavaScript for Scrolling -->
+<script>
+    let slider = document.getElementById("product-slider");
+
+    function scrollLeft() {
+        slider.scrollBy({ left: -slider.clientWidth, behavior: 'smooth' });
+    }
+
+    function scrollRight() {
+        slider.scrollBy({ left: slider.clientWidth, behavior: 'smooth' });
+    }
+</script>
 
 
 
- <!-- Login Modal (Same as Cart Page) -->
 <!-- Login Modal -->
 <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
     <div class="modal-dialog">
-        <div class="modal-content text-center p-4">
-            
-            <!-- Custom Header -->
-            <span class="close position-absolute top-0 end-0 p-3" data-bs-dismiss="modal" style="cursor: pointer;">&times;</span>
+        <div class="modal-content text-center p-4" style="border-radius: 10px;">
+            <span class="close position-absolute top-0 end-0 p-3" data-bs-dismiss="modal" style="cursor: pointer; font-size: 20px;">&times;</span>
             <h2 class="mb-2">Welcome Back!</h2>
             <p class="mb-3">Please log in to continue.</p>
 
@@ -52,11 +335,11 @@
                     <label for="password" class="form-label">Password</label>
                     <input type="password" class="form-control" id="password" name="password" required>
                 </div>
-                <button type="submit" class="btn btn-primary w-100">Login</button>
+                <button type="submit" class="btn btn-primary w-100" style="background: #000; color: #fff; transition: 0.3s;">Login</button>
             </form>
             
             <div class="text-center mt-3">
-                Don't have an account? <a href="{% url 'register' %}" class="fw-bold">Sign up</a>
+                Don't have an account? <a href="{% url 'register' %}" class="fw-bold" style="color: #000; text-decoration: none;">Sign up</a>
             </div>
         </div>
     </div>
@@ -70,5 +353,8 @@
         loginModal.show();
     });
 </script>
+
+
 {% endif %}
+
 {% endblock %}

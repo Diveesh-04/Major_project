@@ -9,11 +9,12 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </head>
 <body>
-
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+     <!-- Navbar -->
+     <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
         <div class="container">
-            <a class="navbar-brand" href="#">Isak Perfume</a>
+            <a class="navbar-brand" href="{% url 'home' %}">
+                <img src="{% static 'images/logo.avif' %}" alt="Isak Perfume" style="height: 40px;">
+            </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -23,8 +24,24 @@
                         <a class="nav-link" href="{% url 'home' %}">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link active" href="{% url 'view_cart' %}">Cart</a>
+                        <a class="nav-link text-white" href="{% url 'about' %}">About</a>
                     </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" style="color: grey;" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Shop
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                            <li><a class="dropdown-item" href="{% url 'category_detail' 1 %}">Attars</a></li>
+                            <li><a class="dropdown-item" href="{% url 'category_detail' 6 %}">Perfumes</a></li>
+                            <li><a class="dropdown-item" href="{% url 'category_detail' 3 %}">Home Fragrances</a></li>
+                            <li><a class="dropdown-item" href="{% url 'category_detail' 5 %}">Multi-perfume Packs</a></li>
+                        </ul>
+                    </li>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'category_detail' 4 %}" style="color: white;">
+                            Make Your Own Perfume
+                        </a>
                     {% if request.user.is_authenticated %}
                         <li class="nav-item">
                             <a class="nav-link" href="{% url 'logout' %}">Logout</a>
@@ -39,90 +56,72 @@
         </div>
     </nav>
 
-    <!-- Cart Container -->
-    <div class="container my-5">
-        <h2 class="text-center mb-4">Shopping Cart</h2>
+<!-- Responsive Full Height Container -->
+<div class="container" style="width: 90%; height: 95vh; display: flex; flex-direction: column; justify-content: center;">
+    <h2 class="text-center mb-4"><b>Shopping Cart</b></h2>
 
-        {% if not request.user.is_authenticated %}
-            <div class="alert alert-warning text-center">
-                You must <a href="#" data-bs-toggle="modal" data-bs-target="#loginModal">log in</a> to view your cart.
-            </div>
-        {% else %}
-            {% if cart_items %}
-            <div class="table-responsive">
-                <table class="table table-bordered text-center">
-                    <thead class="table-dark">
-                        <tr>
-                            <th>Image</th>
-                            <th>Product Name</th>
-                            <th>Price</th>
-                            <th>Quantity</th>
-                            <th>Total</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for item in cart_items %}
-                        <tr>
-                            <td>
-                                <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" width="80">
-                            </td>
-                            <td>{{ item.product.name }}</td>
-                            <td>${{ item.product.price }}</td>
-                            <td>{{ item.quantity }}</td>
-                            <td>${{ item.total_price }}</td>
-                            <td>
-                                <a href="{% url 'remove_from_cart' item.id %}" class="btn btn-danger btn-sm">
-                                    Remove
-                                </a>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-
-            <!-- Total Price & Checkout Button -->
-            <div class="d-flex justify-content-between align-items-center">
-                <h4>Total: <strong>${{ total_price }}</strong></h4>
-                <a href="{% url 'checkout' %}" class="btn btn-success btn-lg">Proceed to Checkout</a>
-            </div>
-            {% else %}
-            <div class="alert alert-warning text-center">
-                Your cart is empty. <a href="{% url 'home' %}" class="alert-link">Continue Shopping</a>.
-            </div>
-            {% endif %}
-        {% endif %}
-    </div>
-
-    <!-- Login Modal -->
-    <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="loginModalLabel">Login</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    {% if not request.user.is_authenticated %}
+        <div class="alert alert-warning text-center">
+            You must <a href="#" data-bs-toggle="modal" data-bs-target="#loginModal">log in</a> to view your cart.
+        </div>
+    {% else %}
+        {% if cart_items %}
+        <div class="card" style="width: 100%; height: 90%; box-shadow: 0 6px 20px 0 rgba(0, 0, 0, 0.19); border-radius: 1rem; border: transparent; overflow: auto;">
+            <div class="row" style="height: 100%;">
+                <div class="col-md-8 cart" style="background-color: #fff; padding: 4vh 5vh; border-bottom-left-radius: 1rem; border-top-left-radius: 1rem;">
+                    <table class="table text-center">
+                        <thead>
+                            <tr>
+                                <th>Image</th>
+                                <th>Product Name</th>
+                                <th>Price</th>
+                                <th>Quantity</th>
+                                <th>Total</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in cart_items %}
+                            <tr>
+                                <td><img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" style="width: 3.5rem;"></td>
+                                <td>{{ item.product.name }}</td>
+                                <td>₹{{ item.product.price }}</td>
+                                <td>{{ item.quantity }}</td>
+                                <td>₹{{ item.total_price }}</td>
+                                <td>
+                                    <a href="{% url 'remove_from_cart' item.id %}" class="btn btn-danger btn-sm">Remove</a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
                 </div>
-                <div class="modal-body">
-                    <form method="POST" action="{% url 'login' %}">
-                        {% csrf_token %}
-                        <div class="mb-3">
-                            <label for="username" class="form-label">Username</label>
-                            <input type="text" class="form-control" id="username" name="username" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="password" class="form-label">Password</label>
-                            <input type="password" class="form-control" id="password" name="password" required>
-                        </div>
-                        <button type="submit" class="btn btn-primary w-100">Login</button>
-                    </form>
-                    <div class="text-center mt-2">
-                        Don't have an account? <a href="{% url 'register' %}">Sign up</a>
+
+                <!-- Summary Section -->
+                <div class="col-md-4 summary" style="background-color: #ddd; border-top-right-radius: 1rem; border-bottom-right-radius: 1rem; padding: 4vh; color: rgb(65, 65, 65);">
+                    <h5>Summary</h5>
+                    <hr>
+                    <div class="row">
+                        <div class="col-8">Total</div>
+                        <div class="col-4 text-end"><strong>₹{{ total_price }}</strong></div>
+                    </div>
+                   <br>
+                
+
+                    <a href="{% url 'checkout' %}" class="btn btn-success w-100" style="background-color: #000; border-color: #000; color: white;">Proceed to Checkout</a>
+                    <div class="back-to-shop" style="margin-top: 4vh;">
+                        <a href="{% url 'home' %}" style="color: black; text-decoration: none;">&larr; Back to Shop</a>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
+        {% else %}
+        <div class="alert alert-warning text-center">
+            Your cart is empty. <a href="{% url 'home' %}" class="alert-link">Continue Shopping</a>.
+        </div>
+        {% endif %}
+    {% endif %}
+</div>
 
 </body>
 </html>

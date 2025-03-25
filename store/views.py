@@ -1,4 +1,4 @@
-from rest_framework import viewsets, generics, status
+from rest_framework import viewsets, generics, status 
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from rest_framework_simplejwt.views import TokenObtainPairView
@@ -9,8 +9,13 @@ from django.http import JsonResponse
 from django.contrib.sessions.models import Session
 from django.views.decorators.csrf import csrf_exempt
 import json
-import re
-from .models import Category, Product, Cart
+import re 
+import razorpay
+from django.conf import settings
+from razorpay.errors import BadRequestError, SignatureVerificationError 
+
+
+from .models import Category, Product, Cart, Order
 from .serializers import (
     CategorySerializer,
     ProductSerializer,
@@ -32,6 +37,7 @@ class ProductViewSet(viewsets.ModelViewSet):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
     permission_classes = [IsAuthenticated]
+    
 
 class CartViewSet(viewsets.ModelViewSet):
     serializer_class = CartSerializer
@@ -54,21 +60,64 @@ class RegisterView(generics.CreateAPIView):
 
 class CustomTokenObtainPairView(TokenObtainPairView):
     serializer_class = CustomTokenObtainPairSerializer
+    
+    
+def shop_view(request):
+    selected_categories = Category.objects.filter(slug__in=['attar', 'perfume', 'home-frag', 'multi-perf'])
+    return render(request, 'store/base.html', {'categories': selected_categories})
 
 # ------------------ FRONTEND VIEWS ------------------
 
-def home(request):
-    categories = Category.objects.all()
-    return render(request, 'store/home.html', {'categories': categories})
 
+def home(request):
+    specific_categories = ["Attar", "Perfume", "Home Fragrances", "Multi Fragrances"]
+    categories = Category.objects.filter(name__in=specific_categories)
+
+    # Exclude "Multiperf" products
+    products = Product.objects.filter(category__in=categories).exclude(category__name="Multi Fragrances")[:10]  
+
+    return render(request, "store/home.html", {"categories": categories, "products": products})
+
+  
 def category_list(request, category_id=None):
-    if category_id:
+    filter_param = request.GET.get("filter")  # Get filter from URL
+
+    if filter_param == "him":
+        category = get_object_or_404(Category, name__icontains="Him")
+        products = Product.objects.filter(category=category)
+        return render(request, "store/category.html", {"category": category, "products": products})
+
+    elif filter_param == "her":
+        category = get_object_or_404(Category, name__icontains="Her")
+        products = Product.objects.filter(category=category)
+        return render(request, "store/category.html", {"category": category, "products": products})
+
+    elif filter_param == "perfume":
+        categories = Category.objects.filter(name__icontains="Perfume")  # Get all categories matching "Perfume"
+        products = Product.objects.filter(category__in=categories)  # Fetch products for all matching categories
+        return render(request, "store/category.html", {"categories": categories, "products": products})
+
+    elif category_id:
         category = get_object_or_404(Category, id=category_id)
         products = Product.objects.filter(category=category)
-        return render(request, 'store/category.html', {'category': category, 'products': products})
-    categories = Category.objects.all()
-    return render(request, 'store/categories.html', {'categories': categories})
+        return render(request, "store/category.html", {"category": category, "products": products})
 
+    categories = Category.objects.all()
+    return render(request, "store/categories.html", {"categories": categories})
+
+
+def category_page(request):
+    filter_param = request.GET.get("filter", "")  # Default to an empty string if no filter is provided
+
+    if filter_param.lower() == "him":
+        categories = Category.objects.filter(name__icontains="Him")
+    elif filter_param.lower() == "her":
+        categories = Category.objects.filter(name__icontains="Her")
+    else:
+        categories = Category.objects.all()
+
+    return render(request, "category_page.html", {"categories": categories})
+    
 def product_detail(request, product_id):
     product = get_object_or_404(Product, id=product_id)
     return render(request, 'store/product_detail.html', {'product': product})
@@ -212,12 +261,123 @@ def remove_from_cart(request, cart_id):
     cart_item.delete()
     return redirect('view_cart')
 
-def checkout(request):
+
+# ------------------ ORDER FUNCTIONALITIES ------------------
+
+def create_razorpay_order(request):
+    """
+    Creates a Razorpay order when a user proceeds to checkout.
+    """
+    if not request.user.is_authenticated:
+        return JsonResponse({"error": "User must be logged in"}, status=403)
+
     cart_items = Cart.objects.filter(user=request.user)
+
+    if not cart_items.exists():
+        return JsonResponse({"error": "Cart is empty"}, status=400)
+
     total_price = sum(item.product.price * item.quantity for item in cart_items)
-    return render(request, 'store/checkout.html', {'cart_items': cart_items, 'total_price': total_price})
+    total_price_paise = int(total_price * 100)  # Convert to paisa
+
+    try:
+        client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET))
+        
+        razorpay_order = client.order.create({
+            "amount": total_price_paise,
+            "currency": "INR",
+            "payment_capture": "1"
+        })
+
+        order = Order.objects.create(
+            user=request.user,
+            razorpay_order_id=razorpay_order["id"],
+            total_price=total_price,
+            status="Pending"
+        )
+
+        return JsonResponse({
+            "order_id": razorpay_order["id"],
+            "total_price": total_price,
+            "razorpay_key": settings.RAZORPAY_KEY_ID
+        })
+
+    except razorpay.errors.BadRequestError as e:
+        return JsonResponse({"error": f"Razorpay Error: {str(e)}"}, status=400)
+
+
+@csrf_exempt
+def payment_success(request):
+    """
+    Verifies the Razorpay payment and updates the order status.
+    """
+    if request.method == "POST":
+        try:
+            data = json.loads(request.body)
+            razorpay_order_id = data.get("razorpay_order_id")
+            razorpay_payment_id = data.get("razorpay_payment_id")
+            razorpay_signature = data.get("razorpay_signature")
+
+            client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET))
+
+            params_dict = {
+                "razorpay_order_id": razorpay_order_id,
+                "razorpay_payment_id": razorpay_payment_id,
+                "razorpay_signature": razorpay_signature
+            }
+
+            client.utility.verify_payment_signature(params_dict)
+
+            # Update order status
+            order = get_object_or_404(Order, razorpay_order_id=razorpay_order_id)
+            order.status = "Paid"
+            order.save()
+
+            return JsonResponse({"status": "success", "message": "Payment verified"})
+
+        except razorpay.errors.SignatureVerificationError:
+            return JsonResponse({"error": "Signature verification failed"}, status=400)
+
+        except json.JSONDecodeError:
+            return JsonResponse({"error": "Invalid JSON data"}, status=400)
+
+    return JsonResponse({"error": "Invalid request method"}, status=405)
+
+
+# ------------------ CHECKOUT FUNCTION ------------------
+
+def checkout(request):
+    
+   
+   
+    if not request.user.is_authenticated:
+        return redirect("login")
+
+    cart_items = Cart.objects.filter(user=request.user)
+
+    if not cart_items.exists():
+        return render(request, "store/checkout.html", {"error": "Cart is empty"})
+
+    total_price = sum(item.product.price * item.quantity for item in cart_items)
+
+    return render(request, "store/checkout.html", {
+        "cart_items": cart_items,
+        "total_price": total_price,
+        "razorpay_key": settings.RAZORPAY_KEY_ID,
+    })
+
+
+# ------------------ ORDER SUCCESS PAGE ------------------
+
+def order_success(request):
+    """
+    Displays a success page after a successful payment.
+    """
+    return render(request, "store/order_success.html")
+
 
 # ------------------ LOGIN MODAL ------------------
 
 def login_modal(request):
     return render(request, 'store/login_modal.html')
+
+

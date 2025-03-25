@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 from pathlib import Path
 import os
 
+
 # Build paths inside the project
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -23,6 +24,16 @@ SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'django-insecure-e^^#@kx4o+oi)jzr=@4
 DEBUG = os.getenv('DJANGO_DEBUG', 'True') == 'True'
 
 ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
+
+
+
+
+
+# Razorpay Credentials
+RAZORPAY_KEY_ID = "rzp_test_zqt7Sodiir8Hy6"
+RAZORPAY_KEY_SECRET = "tPYRp9Hyexw20RsgQkPagez3"
+
+
 
 # Application definition
 INSTALLED_APPS = [

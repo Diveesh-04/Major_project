@@ -1,27 +1,42 @@
 {% extends 'store/base.html' %}
+{% load static %}  <!-- Ensure you load the static tag -->
 
 {% block content %}
+
+<!-- Divider for Separation -->
+<hr style="margin: 50px 0; border-top: 2px solid #ddd;">
 <div class="container mt-5">
     <h2 class="text-center">HOW IT ALL BEGAN</h2>
+
+    <br>
+    
+    <!-- Centered Image -->
     <div class="text-center">
-        <img src="history.webp" class="img-fluid" width="50%">
+        <img src="{% static 'images/history.webp' %}" alt="History" class="img-fluid" style="max-width: 70%; height: auto;">
     </div>
+    <br>
+
     <p class="mx-auto mt-3" style="max-width: 800px;">
-        It was in the era of the 1850s when our story came to life. The then Begum received an 
+         It was in the era of the 1850s when our story came to life. The then Begum received an 
         anonymous consignment of the most exquisite Lucknowi chikankari ensembles, lingering with the 
         rarest of aromas, enticing even the discerning 'royal nose' and making her fall in love with the scent.
     </p>
+    <br>
     
     <h2 class="text-center mt-5">WHO WE ARE TODAY</h2>
     <p class="mx-auto mt-3" style="max-width: 800px;">
         We are a fragrance house dedicated to the creation of unrivaled niche Indian artisanal fragrances 
         of rare notes and blends, backed by over a century and a half of experience.
     </p>
+    <br>
 
     <h2 class="text-center mt-5">ISAK</h2>
     <p class="mx-auto mt-3" style="max-width: 800px;">
         ISAK is a Hindi word derived from ‘ISHQ’. It is pronounced as /IS(e)K/ and is largely used in 
         the heartland of Uttar Pradesh, also our home.
     </p>
+    <br>
+    <!-- Divider for Separation -->
+<hr style="margin: 50px 0; border-top: 2px solid #ddd;">
 </div>
 {% endblock %}

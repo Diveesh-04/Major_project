@@ -1,62 +1,49 @@
 {% extends 'store/base.html' %}
 {% block content %}
+
+<!-- Divider for Separation -->
+<hr style="margin: 50px 0; border-top: 2px solid #ddd;">
+
 <div class="container mt-5">
     <div class="row">
         <!-- Product Image -->
         <div class="col-md-6">
-            <img src="{{ product.image.url }}" class="img-fluid" alt="{{ product.name }}">
+            <img src="{{ product.image.url }}" class="img-fluid" alt="{{ product.name }}" style="border-radius: 8px; width: 100%; max-width: 500px;">
         </div>
 
         <!-- Product Details -->
         <div class="col-md-6">
-            <h2>{{ product.name }}</h2>
+            <h4 style="padding-top: 30px; padding-left: 4px; font-weight: bold;">{{ product.name }}</h4>
+            <hr style="border: 1px solid #ddd;">
+            <p style="font-size: 16px; line-height: 1.6;">{{ product.description }}</p>
             <p><strong>Category:</strong> {{ product.category.name }}</p>
-            <p><strong>Price:</strong> ₹{{ product.price }}</p>
-            <p><strong>Description:</strong> {{ product.description }}</p>
             <p><strong>Notes:</strong> {{ product.top_note }} | {{ product.heart_note }} | {{ product.base_note }}</p>
+            <p><strong>Price:</strong> <span style="font-size: 20px; font-weight: bold;">₹{{ product.price }}</span></p>
+            <p style="color: #777;">(MRP inclusive of all taxes)</p>
 
-            <!-- Add to Cart Form -->
+            <!-- Quantity Selector -->
             <form id="add-to-cart-form">
                 {% csrf_token %}
-                
                 <label for="quantity">Quantity:</label>
-                <div class="quantity-container">
-                    <button type="button" onclick="changeQuantity(-1)">-</button>
-                    <input type="number" id="quantity" name="quantity" value="1" min="1">
-                    <button type="button" onclick="changeQuantity(1)">+</button>
+                <div style="display: flex; align-items: center;">
+                    <button type="button" style="width: 30px; height: 30px; font-size: 18px; border: 1px solid #ccc; background-color: #f8f8f8; cursor: pointer;" onclick="changeQuantity(-1)">-</button>
+                    <input type="number" id="quantity" name="quantity" value="1" min="1" 
+                        style="width: 50px; text-align: center; font-size: 16px; border: 1px solid #ccc; margin: 0 5px;">
+                    <button type="button" style="width: 30px; height: 30px; font-size: 18px; border: 1px solid #ccc; background-color: #f8f8f8; cursor: pointer;" onclick="changeQuantity(1)">+</button>
                 </div>
+                <br>
 
-                <button type="button" class="btn btn-success mt-3" onclick="handleAddToCart({{ product.id }})">
+                <!-- Add to Cart Button -->
+                <button type="button" class="btn btn-success mt-3" onclick="handleAddToCart({{ product.id }})" 
+                    style="padding: 10px 20px; font-size: 18px; border-radius: 5px;">
                     Add to Cart
                 </button>
             </form>
-
-            <style>
-                .quantity-container {
-                    display: flex;
-                    align-items: center;
-                }
-                
-                .quantity-container button {
-                    width: 30px;
-                    height: 30px;
-                    font-size: 18px;
-                    border: 1px solid #ccc;
-                    background-color: #f8f8f8;
-                    cursor: pointer;
-                }
-                
-                .quantity-container input {
-                    width: 50px;
-                    text-align: center;
-                    font-size: 16px;
-                    border: 1px solid #ccc;
-                    margin: 0 5px;
-                }
-            </style>
         </div>
     </div>
 </div>
+<br><br>
+
 
 <!-- Login Modal -->
 <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">

@@ -1,7 +1,179 @@
-body {
-    font-family: Arial, sans-serif;
+/* Ensure full width and prevent unwanted scrolling */
+body, html {
+    margin: 0;
+    padding: 0;
+     /* Prevent horizontal scrolling */
 }
 
+/* Ensure the carousel takes full width without affecting the rest of the page */
+#carouselArrows, #carouselItem {
+    width: 100%;
+    max-width: 100%;
+    height: 95vh; /* Adjust as needed */
+    margin: 0 auto;
+    padding: 0;
+    overflow: hidden;
+}
+
+/* Ensure images fill the carousel properly */
+.carousel-item {
+    width: 100%;
+    height: 95vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+/* Fix image alignment inside carousel */
+.carousel-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Cover the whole carousel */
+    display: block;
+    margin: 0;
+    padding: 0;
+}
+
+/* Typography */
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Montserrat', sans-serif;
+}
+
+
+/* Fix cards alignment */
+#cardslider {
+    margin: 20px auto; /* Center the section */
+    padding: 0 50px;
+    border: none;
+    text-align: center;
+}
+
+#cardslider a {
+    color: inherit;
+    text-decoration: none;
+}
+
+#cardslider a:visited {
+    color: inherit;
+}
+
+#cardslider a:hover {
+    text-decoration: underline;
+}
+
+/* Card Slider */
+#cardslider img {
+    width: 300px;
+    height: 300px;
+}
+
+#cardbuttonprev, #cardbuttonnext {
+    background-color: grey;
+    width: 5vh;
+    height: 5vh;
+    border-radius: 50%;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+/* Adjust category grid alignment */
+.row {
+    display: flex;
+    justify-content: center; /* Center categories */
+}
+
+/* Category Section - Display only 4 Cards */
+.category-container {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 20px;
+    padding: 40px 0;
+    max-width: 1200px;
+    margin: auto;
+}
+
+/* Category Card Styling */
+.category-card {
+    position: relative;
+    width: 300px;
+    height: 400px;
+    overflow: hidden;
+    border-radius: 10px;
+}
+
+.category-card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.3s ease-in-out;
+}
+
+/* Black transparent overlay always visible */
+.category-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+/* Category title */
+.category-overlay h5 {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+/* View More Button */
+.category-overlay .btn {
+    background-color: white;
+    color: black;
+    border: none;
+    padding: 8px 14px;
+    font-size: 14px;
+    font-weight: bold;
+    border-radius: 5px;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.category-overlay .btn:hover {
+    background-color: #ddd;
+    color: black;
+}
+
+/* Shop by Category divider */
+#divider {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #333;
+    padding-top: 40px;
+}
+
+/* Fix image alignment in categories */
+.card-img-top {
+    transition: transform 0.3s ease;
+    width: 100%;
+    height: 250px;
+    object-fit: cover;
+}
+
+.card-img-top:hover {
+    transform: scale(1.05);
+}
+
+/* Style product cards */
 .product-card {
     border-radius: 10px;
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
@@ -18,16 +190,75 @@ body {
     object-fit: cover;
 }
 
-.card-body {
+/* Center the image below navbar */
+.image-below-navbar {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+}
+
+.image-below-navbar img {
+    width: 100%;
+    height: 100vh;
+    object-fit: cover;
+}
+
+/* Fix text overlay on image */
+.text-overlay {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    color: white;
+    z-index: 2;
+}
+
+/* Image Containers */
+.image-container {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
     text-align: center;
 }
 
-.price {
-    font-weight: bold;
-    color: #28a745;
+#forhim img, #forher img {
+    width: 95%;
+    height: auto;
+    filter: brightness(30%);
+    transition: filter 0.3s ease;
 }
 
-.navbar-brand {
-    font-weight: bold;
-    font-size: 1.5rem;
+.link-text {
+    position: absolute;
+    color: white;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 18px;
+    text-align: center;
+    z-index: 2;
+}
+
+#forher .link-text a, #forhim .link-text a {
+    text-decoration: none;
+    font-size: 20px;
+    color: white;
+}
+
+#forher .link-text a:hover, #forhim .link-text a:hover {
+    font-size: 25px;
+}
+
+.view-all-btn {
+    background-color: black;
+    color: white;
+    border: none;
+    padding: 13px 20px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.view-all-btn:hover {
+    opacity: 0.8;
 }
