@@ -39,7 +39,7 @@ The platform includes robust user authentication, product management, order proc
    ```bash
    python -m venv venv
    source venv/bin/activate  # On Mac/Linux
-   source venv/bin/activate  # On Mac/Linux
+   venv\Scripts\activate     # On Windows
    
 3. Install dependencies:
    ```bash
