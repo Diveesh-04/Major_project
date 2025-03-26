@@ -1,6 +1,8 @@
-# ISAK Backend
+# ISAK - A Premium Fragrance E-Commerce Platform
 
-This is the backend for the ISAK Fragrances e-commerce platform, built using Django and Django REST Framework. It provides APIs for managing users, products, categories, carts, and orders, along with authentication and payment integration.
+Isak is a full-stack e-commerce website designed for selling premium perfumes and fragrances. Built with Django (backend) and Bootstrap, HTML, CSS, and JavaScript (frontend), it provides a seamless and secure shopping experience. Users can explore a wide range of perfumes, add them to their cart, and complete purchases using Razorpay for secure transactions.
+
+The platform includes robust user authentication, product management, order processing, and payment integration, ensuring a smooth experience for both customers and administrators
 
 ---
 
