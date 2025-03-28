@@ -1,6 +1,7 @@
 {% extends 'store/base.html' %}
 {% load static %}
 
+<body data-page="other">
 {% block content %}
 <style>
     /* Lock Scroll */
@@ -62,12 +63,5 @@
     </div>
 </div>
                 
-            <p style="margin-top: 15px;">Don't have an account?  
-                <a href="{% url 'register' %}" style="color: #00b8e6; text-decoration: none; font-weight: bold;">
-                    Sign Up Here
-                </a>
-            </p>
-        </div>
-    </div>
-</div>
+            
 {% endblock %}

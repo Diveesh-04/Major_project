@@ -59,14 +59,14 @@ class Product(models.Model):
 class Cart(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, blank=True)  # User can be null for guests
     session_id = models.CharField(max_length=100, null=True, blank=True)  # Stores session ID for guest users
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    product = models.ForeignKey('Product', on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField(default=1)
-    created_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField(auto_now_add=True)  # Stores the date when the product was added to the cart
 
     def __str__(self):
         if self.user:
-            return f"{self.user.username} - {self.product.name} ({self.quantity})"
-        return f"Guest ({self.session_id}) - {self.product.name} ({self.quantity})"
+            return f"{self.user.username} - {self.product.name} ({self.quantity}) on {self.created_at}"
+        return f"Guest ({self.session_id}) - {self.product.name} ({self.quantity}) on {self.created_at}"
     
 class Order(models.Model):
     STATUS_CHOICES = [

@@ -25,6 +25,8 @@ from .views import (
     create_razorpay_order,
     payment_success, 
     order_success,
+  
+
 )
 
 # Create a router for ViewSets
@@ -53,6 +55,7 @@ urlpatterns = [
     path('api/cart/add/<int:product_id>/', add_to_cart, name='add_to_cart'),  # ✅ API Add to Cart
     path('add-to-cart/<int:product_id>/', add_to_cart, name='add_to_cart'),
     path('update-cart-quantity/', update_cart_quantity, name='update_cart_quantity'),
+   
 
     # Frontend Views
     path('cart/', view_cart, name='cart'),  # ✅ Cart Page
