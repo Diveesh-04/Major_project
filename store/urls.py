@@ -25,8 +25,7 @@ from .views import (
     create_razorpay_order,
     payment_success, 
     order_success,
-  
-
+    cod_order
 )
 
 # Create a router for ViewSets
@@ -49,13 +48,14 @@ urlpatterns = [
     path("checkout/<int:order_id>/", checkout, name="checkout"),
     path("payment-success/", payment_success, name="payment_success"),
     path("order-success/", order_success, name="order_success"),
+    path("order-success/<int:order_id>/", order_success, name="order_success"),
+    path("cod-order/", cod_order, name="cod_order"),
 
     
       # Cart API
     path('api/cart/add/<int:product_id>/', add_to_cart, name='add_to_cart'),  # ✅ API Add to Cart
     path('add-to-cart/<int:product_id>/', add_to_cart, name='add_to_cart'),
     path('update-cart-quantity/', update_cart_quantity, name='update_cart_quantity'),
-   
 
     # Frontend Views
     path('cart/', view_cart, name='cart'),  # ✅ Cart Page

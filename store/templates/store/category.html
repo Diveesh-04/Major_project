@@ -1,20 +1,24 @@
 {% extends 'store/base.html' %}
 {% block content %}
 
-<body data-page="category">
 <!-- Category Banner with Dynamic Image -->
-<div style="position: relative; width: 100%; height: 110vh; overflow: hidden; margin-top: -80px;">
-    {% if category.image %}
-        <img src="{{ category.image.url }}" alt="{{ category.name }}" 
-             style="width: 100%; height: 100%; object-fit: cover;">
-    {% else %}
-        <img src="https://via.placeholder.com/1200x500" alt="No Image Available" 
-             style="width: 100%; height: 100%; object-fit: cover;">
-    {% endif %}
+{% with category.name|lower as cat_name %}
+    {% if cat_name == "attar" or cat_name == "home fragrances" or cat_name == "perfume" or cat_name == "multi fragrances" %}
+        <div style="position: relative; width: 100%; height: 110vh; overflow: hidden; margin-top: -80px;">
+            {% if category.image %}
+                <img src="{{ category.image.url }}" alt="{{ category.name }}" 
+                     style="width: 100%; height: 100%; object-fit: cover;">
+            {% else %}
+                <img src="https://via.placeholder.com/1200x500" alt="No Image Available" 
+                     style="width: 100%; height: 100%; object-fit: cover;">
+                     {% endif %}
+                     <!-- Black Tint Overlay -->
+                     <div style="position: absolute; top: 0; left: 0; width: 100%; height: 110vh; background: rgba(0, 0, 0, 0.4);"></div>
+                 </div>
+             {% endif %}
+{% endwith %}
 
-    <!-- Black Tint Overlay -->
-    <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.4);"></div>
-
+  
     <!-- Text Overlay -->
     <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: white; font-size: 32px; font-weight: bold; text-align: center;">
         <h2>{{ category.name }}</h2>

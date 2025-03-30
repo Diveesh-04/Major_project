@@ -15,7 +15,7 @@ from django.conf import settings
 from razorpay.errors import BadRequestError, SignatureVerificationError 
 
 
-from .models import Category, Product, Cart, Order
+from .models import Category, Product, Cart, Order 
 from .serializers import (
     CategorySerializer,
     ProductSerializer,
@@ -343,6 +343,23 @@ def payment_success(request):
     return JsonResponse({"error": "Invalid request method"}, status=405)
 
 
+def cod_order(request):
+    if request.method == "POST":
+        try:
+            # 🛒 Create a new order for COD
+            order = Order.objects.create(user=request.user, payment_method="COD", status="Pending")
+
+            return JsonResponse({
+                "success": True,
+                "order_id": order.id,
+                "redirect_url": f"/order-success/?order_id={order.id}"  # ✅ Redirect URL
+            })
+        except Exception as e:
+            return JsonResponse({"success": False, "error": str(e)}, status=500)
+
+    return JsonResponse({"success": False, "error": "Invalid request"}, status=400)
+
+
 # ------------------ CHECKOUT FUNCTION ------------------
 
 def checkout(request):
@@ -366,13 +383,18 @@ def checkout(request):
     })
 
 
+
 # ------------------ ORDER SUCCESS PAGE ------------------
 
+
 def order_success(request):
-    """
-    Displays a success page after a successful payment.
-    """
-    return render(request, "store/order_success.html")
+    order_id = request.GET.get("order_id", None)
+    order = None
+
+    if order_id:
+        order = Order.objects.filter(id=order_id).first()
+
+    return render(request, "store/order_success.html", {"order": order})
 
 
 # ------------------ LOGIN MODAL ------------------

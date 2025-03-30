@@ -1,4 +1,5 @@
 {% load static %}
+<body data-page="home">
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -42,16 +43,69 @@
                         <a class="nav-link" href="{% url 'category_detail' 4 %}" style="color: white;">
                             Make Your Own Perfume
                         </a>
-                    {% if request.user.is_authenticated %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+                    </ul>
+                    <div class="login-container">
+                        <li class="nav-item dropdown"> 
+                            <a class="nav-link text-white" href="{% if user.is_authenticated %}{% url 'login' %}{% else %}#{% endif %}" 
+                               id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <!-- User SVG Icon -->
+                                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="white" viewBox="0 0 512 512">
+                                    <path d="M399 384.2C376.9 345.8 335.4 320 288 320l-64 0c-47.4 0-88.9 25.8-111 64.2
+                                             c35.2 39.2 86.2 63.8 143 63.8s107.8-24.7 143-63.8zM0 256a256 256 0 1 1 512 0
+                                             A256 256 0 1 1 0 256zm256 16a72 72 0 1 0 0-144 72 72 0 1 0 0 144z"/>
+                                </svg>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                                {% if user.is_authenticated %}
+                                    <li>
+                                        <a class="dropdown-item" href="{% url 'login' %}">
+                                            <i class="fa-solid fa-user"></i> {{ user.username }}
+                                        </a>
+                                    </li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item text-danger" href="{% url 'logout' %}">Logout</a></li>
+                                {% else %}
+                                    <li><a class="dropdown-item" href="{% url 'login' %}">Login</a></li>
+                                    <li><a class="dropdown-item" href="{% url 'register' %}">Sign Up</a></li>
+                                {% endif %}
+                            </ul>
                         </li>
-                    {% else %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#loginModal">Login</a>
-                        </li>
-                    {% endif %}
-                </ul>
+                    </div>
+                    <style>
+                        .navbar {
+                            position: relative; /* Needed for absolute positioning */
+                        }
+                    
+                        .login-container {
+                            position: absolute;
+                            right: 170px; /* Adjust as needed */
+                            top: 50%;
+                            transform: translateY(-50%);
+                        }
+
+                        .login-container {
+                            list-style: none;  /* Remove default list styles */
+                            padding: 0;
+                            margin: 0;
+                        }
+                        
+                        .nav-item.dropdown {
+                            display: flex;
+                            align-items: center; /* Ensures proper alignment */
+                        }
+                    
+                        .nav-item.dropdown a {
+                            display: flex;
+                            align-items: center;
+                            text-decoration: none;
+                        }
+                    
+                        .dropdown-menu {
+                            min-width: 160px;
+                        }
+                    </style>
+            </div>
+
             </div>
         </div>
     </nav>
