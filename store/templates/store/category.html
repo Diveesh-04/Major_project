@@ -3,7 +3,7 @@
 
 <!-- Category Banner with Dynamic Image -->
 {% with category.name|lower as cat_name %}
-    {% if cat_name == "attar" or cat_name == "home fragrances" or cat_name == "perfume" or cat_name == "multi fragrances" %}
+{% if cat_name == "attar" or cat_name == "home fragrances" or cat_name == "perfume" or cat_name == "multi fragrances" or cat_name == "her/him" or cat_name == "him" or cat_name == "her" %}
         <div style="position: relative; width: 100%; height: 110vh; overflow: hidden; margin-top: -80px;">
             {% if category.image %}
                 <img src="{{ category.image.url }}" alt="{{ category.name }}" 
